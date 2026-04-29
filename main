@@ -27,19 +27,23 @@ class numberGuessingGame:
                      "'be honored'"]
         
         #buttons + label
-        self.label = tk.Label(root, text="You were once a successful businessman", pady=150, bg = "#181923", font=("monospace", 30, "bold"), fg="#b59e90",)
+        self.label = tk.Label(root, text="You were once a successful businessman", pady=100, bg = "#181923", font=("monospace", 30, "bold"), fg="#b59e90",)
         self.label.pack()
 
-        self.plotButton = tk.Button(root, text="Next", command = self.next, bg = "#6f687a", font = ("monospace", 20))
-        self.plotButton.pack()
+        self.image = tk.PhotoImage(file="door.png")
+        self.door = tk.Label(root, image=self.image)
+        self.door.pack()
 
-        self.startButton = tk.Button(root, text = "START", command = self.start, font = ("monospace", 20))
+        self.plotButton = tk.Button(root, text="Next", command = self.next, highlightbackground = "#4c546d", font = ("monospace", 20))
+        self.plotButton.pack(pady = 50)
+
+        self.startButton = tk.Button(root, text = "START", command = self.start, highlightbackground = "#4c546d", font = ("monospace", 20))
         self.startButton.pack_forget()
 
-        self.confirmButton = tk.Button(root, text="Guess", command=self.guessNum, font = ("monospace", 20))
+        self.confirmButton = tk.Button(root, text="Guess", command=self.guessNum, highlightbackground = "#4c546d", font = ("monospace", 20))
         self.confirmButton.pack_forget()
 
-        self.replayButton = tk.Button(root, text = "Go Back in Time", command = self.replay, font = ("monospace", 20))
+        self.replayButton = tk.Button(root, text = "Go Back in Time", command = self.replay, highlightbackground = "#4c546d", font = ("monospace", 20))
         self.replayButton.pack_forget()
 
         self.forInput = tk.Entry(root, width = 15, highlightbackground="gray")
@@ -66,19 +70,19 @@ class numberGuessingGame:
         self.randomNum = random.randint(1,100)
         self.label.config(text="Guess A Number 1-100", bg = "#181923")
 
-        #show entry for input
+        #show entry + button for input
         self.forInput.pack(pady = 100)
-
-        #show guess button
         self.confirmButton.pack()
 
-        #temp hide button 
+        #temp hide button + img
         self.startButton.pack_forget()
+        self.door.pack_forget()
 
     #Check user input
     def guessNum(self):
 
         if self.attempt < 10:
+            #validate input
             try:
                 self.attempt += 1
                 guess = int(self.forInput.get())
@@ -95,10 +99,12 @@ class numberGuessingGame:
                         #show replay button
                         self.replayButton.pack(pady=30)
                         self.confirmButton.pack_forget()
-    
+
+                #number not within 1-100
                 else:
                     self.label.config(text="Yes, A Number but, Out of Bounds :/")
 
+            #not int
             except ValueError:
                 self.label.config(text="INVALID!!!")
     
@@ -114,16 +120,17 @@ class numberGuessingGame:
         self.attempt = 0
         self.index = 0
 
-        #reset text and input box
+        #reset elements + show img
         self.label.config(text=self.plot[0], font=("monospace", 30, "bold"))
         self.forInput.delete(0, tk.END)
+        self.door.pack()
 
         #hide button and input box
         self.replayButton.pack_forget()
         self.forInput.pack_forget()
 
         #restart plot
-        self.plotButton.pack()
+        self.plotButton.pack(pady = 50)
 
 
 #make main page
