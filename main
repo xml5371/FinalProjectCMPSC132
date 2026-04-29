@@ -1,128 +1,138 @@
 import random
 import tkinter as tk
 
+class numberGuessingGame:
+
+    def __init__(self, root):
+        self.root = root
+
+        #number to guess
+        self.randomNum = 0
+
+        #num of attempts
+        self.attempt = 0
+
+        #my plot
+        self.index = 0
+
+        self.plot = ["You were once a successful businessman", 
+                     "Now you're nothing but a runaway gambler", 
+                     "The casino owner was very unhappy with your escape",
+                     "Though you somehow lasted a week",
+                     "Unfortunatly for you, today is the day you get caught",
+                     "'ill give you a chance', he said",
+                     "'You know guess the number right'",
+                     "'We'll play this game with your life on the line'",
+                     "'the whole process will be broadcasted live'",
+                     "'be honored'"]
+        
+        #buttons + label
+        self.label = tk.Label(root, text="You were once a successful businessman", pady=150, bg = "#181923", font=("monospace", 30, "bold"), fg="#b59e90",)
+        self.label.pack()
+
+        self.plotButton = tk.Button(root, text="Next", command = self.next, bg = "#6f687a", font = ("monospace", 20))
+        self.plotButton.pack()
+
+        self.startButton = tk.Button(root, text = "START", command = self.start, font = ("monospace", 20))
+        self.startButton.pack_forget()
+
+        self.confirmButton = tk.Button(root, text="Guess", command=self.guessNum, font = ("monospace", 20))
+        self.confirmButton.pack_forget()
+
+        self.replayButton = tk.Button(root, text = "Go Back in Time", command = self.replay, font = ("monospace", 20))
+        self.replayButton.pack_forget()
+
+        self.forInput = tk.Entry(root, width = 15, highlightbackground="gray")
+        self.forInput.pack_forget()
+        
+        
+
+    #Changes text when next is clicked
+    def next(self):
+        self.index += 1
+        if self.index < len(self.plot):
+            self.label.config(text=self.plot[self.index])
+        else:
+            #temp hide plot button 
+            self.plotButton.pack_forget()
+            self.label.config(text = "Welcome to the Number Guessing Game!", font=("monospace", 30, "bold"))
+
+            #show start button
+            self.startButton.pack(pady=30)
+
+    #Starts the game
+    def start(self):
+        #Random Number Generation
+        self.randomNum = random.randint(1,100)
+        self.label.config(text="Guess A Number 1-100", bg = "#181923")
+
+        #show entry for input
+        self.forInput.pack(pady = 100)
+
+        #show guess button
+        self.confirmButton.pack()
+
+        #temp hide button 
+        self.startButton.pack_forget()
+
+    #Check user input
+    def guessNum(self):
+
+        if self.attempt < 10:
+            try:
+                self.attempt += 1
+                guess = int(self.forInput.get())
+
+                if 1 <= guess <= 100:
+                    if guess < self.randomNum:
+                        self.label.config(text="Too low")
+                    elif guess > self.randomNum:
+                        self.label.config(text="Too high")
+                    else:
+                        self.label.config(text=f'Congratulations! You used {self.attempt} attempts.')
+                        self.confirmButton.pack_forget()
+
+                        #show replay button
+                        self.replayButton.pack(pady=30)
+                        self.confirmButton.pack_forget()
+    
+                else:
+                    self.label.config(text="Yes, A Number but, Out of Bounds :/")
+
+            except ValueError:
+                self.label.config(text="INVALID!!!")
+    
+        else:
+            self.label.config(text="Congratulations! Out of attempts.\nP.S. You died a miserable death")
+            #show replay button
+            self.replayButton.pack(pady=30)
+            self.confirmButton.pack_forget()
+
+
+    def replay(self):
+
+        self.attempt = 0
+        self.index = 0
+
+        #reset text and input box
+        self.label.config(text=self.plot[0], font=("monospace", 30, "bold"))
+        self.forInput.delete(0, tk.END)
+
+        #hide button and input box
+        self.replayButton.pack_forget()
+        self.forInput.pack_forget()
+
+        #restart plot
+        self.plotButton.pack()
+
+
 #make main page
 root = tk.Tk()
 root.configure(bg = "#181923")
 root.title("The Number Guessing Game")
 root.geometry('800x400')
 
-#number to guess
-randomNum = 0
-
-#num of attempts
-attempt = 0
-
-#my plot
-index = 0
-
-plot = ["You were once a successful businessman", 
-        "Now you're nothing but a runaway gambler", 
-        "The casino owner was very unhappy with your escape",
-        "Though you somehow lasted a week",
-        "Unfortunatly for you, today is the day you get caught",
-        "'ill give you a chance', he said",
-        "'You know guess the number right'",
-        "'We'll play this game with your life on the line'",
-        "'the whole process will be broadcasted live'",
-        "'be honored'"]
-
-label = tk.Label(root, text="You were once a successful businessman", pady=150, bg = "#181923", font=("monospace", 30, "bold"), fg="#b59e90",)
-label.pack()
-
-#Changes text when next is clicked
-def next():
-    global index
-    index += 1
-    if index < len(plot):
-        label.config(text=plot[index])
-    else:
-        #temp hide plot button 
-        plotButton.pack_forget()
-        label.config(text = "Welcome to the Number Guessing Game!", font=("monospace", 30, "bold"))
-
-        #show start button
-        startButton.pack(pady=30)
-
-#Starts the game
-def start():
-    #Random Number Generation
-    global randomNum, forInput
-    randomNum = random.randint(1,100)
-    label.config(text="Guess A Number 1-100", bg = "#181923")
-
-    #show entry for input
-    forInput.pack(pady = 100)
-
-    #show guess button
-    confirmButton.pack()
-
-    #temp hide button 
-    startButton.pack_forget()
-
-#Check user input
-def guessNum():
-    global attempt
-
-    if attempt < 10:
-        try:
-            attempt += 1
-            guess = int(forInput.get())
-
-            if 1 <= guess <= 100:
-                if guess < randomNum:
-                    label.config(text="Too low")
-                elif guess > randomNum:
-                    label.config(text="Too high")
-                else:
-                    label.config(text=f'Congratulations! You used {attempt} attempts.')
-                    confirmButton.pack_forget()
-    
-            else:
-                label.config(text="Out of bounds :/")
-
-        except ValueError:
-            label.config(text="INVALID!!!")
-    
-    else:
-        label.config(text="Congratulations! Out of attempts.\nP.S. You died a miserable death")
-        #show replay button
-        replayButton.pack(pady=30)
-        confirmButton.pack_forget()
-
-def replay():
-    global attempt, index
-
-    attempt = 0
-    index = 0
-
-    #reset text and input box
-    label.config(text=plot[0], font=("monospace", 30, "bold"))
-    forInput.delete(0, tk.END)
-
-    #hide button and input box
-    replayButton.pack_forget()
-    forInput.pack_forget()
-
-    #restart plot
-    plotButton.pack()
-
-
-
-#buttons
-plotButton = tk.Button(root, text="Next", command = next, bg = "#6f687a", font = ("monospace", 20))
-plotButton.pack()
-
-startButton = tk.Button(root, text = "START", command = start, font = ("monospace", 20))
-startButton.pack_forget()
-
-confirmButton = tk.Button(root, text="Guess", command=guessNum, font = ("monospace", 20))
-confirmButton.pack_forget()
-
-replayButton = tk.Button(root, text = "Go Back in Time", command = replay, font = ("monospace", 20))
-replayButton.pack_forget()
-
-forInput = tk.Entry(root, width = 15, highlightbackground="gray")
-forInput.pack_forget()
-
+#start
+game = numberGuessingGame(root)
 root.mainloop()
+
